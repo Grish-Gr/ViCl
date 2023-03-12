@@ -1,6 +1,5 @@
 package com.mter.vicl.entities.users;
 
-import com.mter.vicl.entities.classroom.ClassRoom;
 import com.mter.vicl.entities.classroom.RecordStudent;
 import jakarta.persistence.*;
 import lombok.Data;

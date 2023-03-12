@@ -1,5 +1,6 @@
 package com.mter.vicl.entities.classroom;
 
+import com.mter.vicl.entities.tasks.Task;
 import com.mter.vicl.entities.users.Teacher;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,7 +10,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "classrooms")
-public class ClassRoom {
+public class Classroom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +27,12 @@ public class ClassRoom {
     @JoinColumn(name = "teacher", referencedColumnName = "id")
     private Teacher teacher;
 
-    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RecordStudent> recordStudents;
-
     @Column(name = "secret_key")
     private String secretKey;
+
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RecordStudent> recordStudents;
+
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 }

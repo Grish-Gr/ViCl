@@ -22,7 +22,7 @@ public class RecordStudent {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classroom", referencedColumnName = "id")
-    private ClassRoom classRoom;
+    private Classroom classroom;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "record_date")

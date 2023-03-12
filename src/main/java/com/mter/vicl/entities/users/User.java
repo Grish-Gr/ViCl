@@ -1,6 +1,7 @@
 package com.mter.vicl.entities.users;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 @Data

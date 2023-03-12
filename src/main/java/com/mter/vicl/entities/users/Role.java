@@ -26,8 +26,6 @@ public enum Role {
     }
 
     public List<? extends GrantedAuthority> authorities(){
-        return properties.stream().map(prop ->
-            new SimpleGrantedAuthority(prop.name())
-        ).toList();
+        return properties.stream().map(Property::getAuthority).toList();
     }
 }

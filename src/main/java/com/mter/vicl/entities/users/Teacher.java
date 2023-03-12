@@ -1,6 +1,6 @@
 package com.mter.vicl.entities.users;
 
-import com.mter.vicl.entities.classroom.ClassRoom;
+import com.mter.vicl.entities.classroom.Classroom;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
@@ -15,6 +15,5 @@ import java.util.List;
 public class Teacher extends User{
 
     @OneToMany(mappedBy = "teacher", fetch = FetchType.EAGER)
-    private List<ClassRoom> classRoom;
+    private List<Classroom> classrooms;
 }
-

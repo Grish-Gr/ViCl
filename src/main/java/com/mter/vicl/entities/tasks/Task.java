@@ -1,8 +1,6 @@
 package com.mter.vicl.entities.tasks;
 
-import com.mter.vicl.entities.classroom.ClassRoom;
-import com.mter.vicl.entities.tasks.AnswerTask;
-import com.mter.vicl.entities.users.Teacher;
+import com.mter.vicl.entities.classroom.Classroom;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -35,7 +33,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "classroom", referencedColumnName = "id")
-    private ClassRoom classRoom;
+    private Classroom classroom;
 
     @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
     private List<AnswerTask> answers;
