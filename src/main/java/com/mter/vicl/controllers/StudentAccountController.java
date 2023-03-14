@@ -1,20 +1,19 @@
 package com.mter.vicl.controllers;
 
-import com.mter.vicl.services.StudentService;
-import com.sun.security.auth.UserPrincipal;
+import com.mter.vicl.dto.request.LoginFormDto;
+import com.mter.vicl.services.account.StudentService;
+import com.mter.vicl.services.security.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/student")
 public class StudentAccountController {
 
-    @Autowired
-    private StudentService studentService;
+    @GetMapping("/test")
+    public ResponseEntity<?> getTest(Authentication authentication){
+        return ResponseEntity.ok(authentication.getPrincipal());
+    }
 }

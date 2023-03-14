@@ -1,6 +1,5 @@
-package com.mter.vicl.services;
+package com.mter.vicl.services.security;
 
-import com.mter.vicl.dto.request.LoginFormDto;
 import com.mter.vicl.dto.request.RegistrationFormDto;
 import com.mter.vicl.entities.users.Role;
 import com.mter.vicl.entities.users.Student;
@@ -8,15 +7,16 @@ import com.mter.vicl.entities.users.Teacher;
 import com.mter.vicl.repositories.StudentRepository;
 import com.mter.vicl.repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Service
-public class AuthService {
+public class RegistrationService {
 
     @Autowired
     private StudentRepository studentRepository;
     @Autowired
     private TeacherRepository teacherRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Student registerStudent(RegistrationFormDto registrationForm){
         Student student = new Student();
@@ -25,6 +25,7 @@ public class AuthService {
         student.setSurname(registrationForm.surname());
         student.setEmail(registrationForm.email());
         student.setRole(Role.STUDENT);
+        student.setPassword(passwordEncoder.encode(registrationForm.password()));
         return studentRepository.save(student);
     }
 
@@ -35,11 +36,7 @@ public class AuthService {
         teacher.setSurname(registrationForm.surname());
         teacher.setEmail(registrationForm.email());
         teacher.setRole(Role.TEACHER);
+        teacher.setPassword(passwordEncoder.encode(registrationForm.password()));
         return teacherRepository.save(teacher);
-    }
-
-    public String getJwtToken(LoginFormDto loginForm){
-
-        return "";
     }
 }

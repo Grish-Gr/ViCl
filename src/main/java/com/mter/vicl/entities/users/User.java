@@ -25,6 +25,9 @@ abstract public class User {
     @Column(name = "email", unique = true)
     private String email;
 
+    @Column
+    private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;

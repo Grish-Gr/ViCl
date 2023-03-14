@@ -8,10 +8,12 @@ import java.util.List;
 
 public enum Role {
     STUDENT(List.of(
+        Property.PERSONAL_ACCOUNT_STUDENT,
         Property.READ_CLASSROOM,
         Property.PASS_TASK
     )),
     TEACHER(List.of(
+        Property.PERSONAL_ACCOUNT_TEACHER,
         Property.READ_CLASSROOM,
         Property.CHANGE_CLASSROOM,
         Property.CRATE_CLASSROOM,

@@ -1,4 +1,4 @@
-package com.mter.vicl.services;
+package com.mter.vicl.services.classroom;
 
 import com.mter.vicl.dto.request.TaskFormDto;
 import com.mter.vicl.entities.classroom.Classroom;
@@ -58,6 +58,13 @@ public class ClassroomTeacherService {
         return classroom.getRecordStudents().stream()
             .filter(record -> record.getStatusRecord() == StatusRecord.UNCONFIRMED)
             .map(RecordStudent::getStudent).toList();
+    }
+
+    @Transactional
+    public List<Task> getTasksInClassroom(Long teacherID, Long classroomID
+    ) throws NoSuchElementException, NoAuthTeacherInClassroomException {
+        Classroom classroom = checkTeacherInClassroom(teacherID, classroomID);
+        return classroom.getTasks();
     }
 
     @Transactional

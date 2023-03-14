@@ -1,4 +1,4 @@
-package com.mter.vicl.services;
+package com.mter.vicl.services.classroom;
 
 import com.mter.vicl.dto.request.AnswerFormDto;
 import com.mter.vicl.entities.classroom.Classroom;
@@ -41,7 +41,7 @@ public class ClassroomStudentService {
     }
 
     @Transactional
-    public List<Student> getStudentsInClassroom(Long classroomID, Long studentID
+    public List<Student> getStudentsInClassroom(Long studentID, Long classroomID
     ) throws NoSuchElementException, NoAuthStudentInClassroomException{
         Classroom classroom = checkStudentInClassroom(studentID, classroomID);
         return classroom.getRecordStudents().stream()
@@ -50,7 +50,7 @@ public class ClassroomStudentService {
     }
 
     @Transactional
-    public List<Task> getTasksInClassroom(Long classroomID, Long studentID
+    public List<Task> getTasksInClassroom(Long studentID, Long classroomID
     ) throws NoSuchElementException, NoAuthStudentInClassroomException{
         Classroom classroom = checkStudentInClassroom(studentID, classroomID);
         return classroom.getTasks();

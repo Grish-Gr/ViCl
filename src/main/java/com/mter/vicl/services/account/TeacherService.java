@@ -1,4 +1,4 @@
-package com.mter.vicl.services;
+package com.mter.vicl.services.account;
 
 import com.mter.vicl.dto.request.ClassroomFormDto;
 import com.mter.vicl.entities.classroom.Classroom;
