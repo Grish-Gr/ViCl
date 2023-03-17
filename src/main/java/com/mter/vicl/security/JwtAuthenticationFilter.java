@@ -1,6 +1,7 @@
 package com.mter.vicl.security;
 
 import com.mter.vicl.entities.users.Role;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -22,10 +23,12 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private JwtUtils jwtUtils;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain
+    ) throws IOException, ServletException {
         String token = getTokenFromRequest((HttpServletRequest) servletRequest);
-        if (token != null && jwtProvider.validateToken(token)){
-            SecurityContextHolder.getContext().setAuthentication(jwtUtils.getJwtAuthentication(token));
+        if (token != null && jwtProvider.validateAccessToken(token)){
+            JwtAuthentication authentication = jwtUtils.getJwtAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

@@ -1,6 +1,7 @@
 package com.mter.vicl.security;
 
 import com.mter.vicl.entities.users.Role;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,8 @@ import java.util.Collection;
 @Setter
 public class JwtAuthentication implements Authentication {
 
+    private String name;
+    private String lastname;
     private Long userID;
     private Role role;
     private boolean isAuthenticated;
@@ -48,6 +51,6 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return null;
+        return name + " " + lastname;
     }
 }

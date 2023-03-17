@@ -1,7 +1,6 @@
 package com.mter.vicl.controllers;
 
 import com.mter.vicl.entities.users.Role;
-import com.mter.vicl.security.UserPrincipal;
 import com.mter.vicl.services.classroom.ClassroomStudentService;
 import com.mter.vicl.services.classroom.ClassroomTeacherService;
 import com.mter.vicl.services.exceptions.NoAuthStudentInClassroomException;
@@ -24,7 +23,7 @@ public class ClassroomController {
     @Autowired
     private ClassroomTeacherService classroomTeacherService;
 
-    @GetMapping("/{classroomID}/students")
+    /*@GetMapping("/{classroomID}/students")
     public ResponseEntity<?> getStudents(@PathVariable Long classroomID, UserPrincipal userPrincipal
     ) throws NoAuthStudentInClassroomException, NoSuchElementException, NoAuthTeacherInClassroomException {
         if (userPrincipal.getRole().equals(Role.STUDENT)){
@@ -56,6 +55,6 @@ public class ClassroomController {
                                         UserPrincipal userPrincipal
     ) throws NoAuthTeacherInClassroomException, NoSuchElementException{
         return ResponseEntity.ok(classroomTeacherService.getAnswersOnTask(userPrincipal.getId(), taskID));
-    }
+    }*/
 
 }

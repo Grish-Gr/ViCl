@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                 manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/login/**").permitAll()
+                .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/student/**").hasAuthority(Property.PERSONAL_ACCOUNT_STUDENT.name())
                 .requestMatchers("/teacher/**").hasAuthority(Property.PERSONAL_ACCOUNT_TEACHER.name())
                 .requestMatchers("/classroom/**").hasAuthority(Property.READ_CLASSROOM.name())
