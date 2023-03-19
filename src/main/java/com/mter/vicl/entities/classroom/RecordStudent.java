@@ -16,7 +16,7 @@ public class RecordStudent {
     @Column(name = "id")
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student", referencedColumnName = "id")
     private Student student;
 

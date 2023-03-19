@@ -1,11 +1,10 @@
 package com.mter.vicl.config;
 
-import com.mter.vicl.entities.users.Property;
+import com.mter.vicl.entities.users.Permission;
 import com.mter.vicl.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,9 +30,7 @@ public class SecurityConfiguration {
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(request -> request
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/student/**").hasAuthority(Property.PERSONAL_ACCOUNT_STUDENT.name())
-                .requestMatchers("/teacher/**").hasAuthority(Property.PERSONAL_ACCOUNT_TEACHER.name())
-                .requestMatchers("/classroom/**").hasAuthority(Property.READ_CLASSROOM.name())
+                .anyRequest().authenticated()
             );
         return http.build();
     }

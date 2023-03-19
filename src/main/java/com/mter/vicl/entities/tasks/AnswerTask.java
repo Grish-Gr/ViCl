@@ -17,7 +17,7 @@ public class AnswerTask {
     @Column(name = "answer")
     private String answer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student", referencedColumnName = "id")
     private Student student;
 

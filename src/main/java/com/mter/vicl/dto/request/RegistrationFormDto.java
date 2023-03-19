@@ -7,7 +7,10 @@ public record RegistrationFormDto(
     String lastname,
     String surname,
     String email,
-    String password
+    String password,
+    String role
 ) {
-
+    public Role getRole(){
+        return Role.valueOf(role);
+    }
 }

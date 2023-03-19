@@ -57,9 +57,13 @@ public class ClassroomStudentService {
     }
 
     @Transactional
-    public AnswerTask putAnswerTask(Long studentID, AnswerFormDto answerForm) throws NoSuchElementException, NoAuthStudentInClassroomException {
+    public AnswerTask putAnswerTask(Long studentID,  Long classroomID, Long taskID, AnswerFormDto answerForm
+    ) throws NoSuchElementException, NoAuthStudentInClassroomException {
         Task task = taskRepository.findById(answerForm.taskID()).orElseThrow();
-        Classroom classroom = checkStudentInClassroom(studentID, task.getClassroom().getId());
+        Classroom classroom = checkStudentInClassroom(studentID, classroomID);
+        if (task.getClassroom().getId() != classroomID || task.getId() != taskID){
+            throw new NoSuchElementException("Wrong task ID");
+        }
         Student student = studentRepository.findById(studentID).orElseThrow();
         if (classroom.equals(task.getClassroom())){
             AnswerTask answerTask = new AnswerTask();
