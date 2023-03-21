@@ -1,5 +1,6 @@
 package com.mter.vicl.entities.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,8 @@ abstract public class User {
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column
+    @JsonIgnore
+    @Column(name = "password")
     private String password;
 
     @Enumerated(EnumType.STRING)

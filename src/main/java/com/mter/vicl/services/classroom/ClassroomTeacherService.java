@@ -10,6 +10,7 @@ import com.mter.vicl.entities.users.Student;
 import com.mter.vicl.repositories.*;
 import com.mter.vicl.services.exceptions.NoAuthStudentInClassroomException;
 import com.mter.vicl.services.exceptions.NoAuthTeacherInClassroomException;
+import com.mter.vicl.services.exceptions.NotFoundTaskException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,10 +112,10 @@ public class ClassroomTeacherService {
 
     @Transactional
     public List<AnswerTask> getAnswersOnTask(Long teacherID, Long classroomID, Long taskID
-    ) throws NoSuchElementException, NoAuthTeacherInClassroomException {
+    ) throws NoSuchElementException, NoAuthTeacherInClassroomException, NotFoundTaskException {
         Task task = taskRepository.findById(taskID).orElseThrow();
         if (classroomID != task.getClassroom().getId()){
-            throw new NoSuchElementException("Classroom don't have task");
+            throw new NotFoundTaskException("Classroom don't have task");
         }
         checkTeacherInClassroom(teacherID, task.getClassroom().getId());
         return task.getAnswers();
@@ -122,11 +123,11 @@ public class ClassroomTeacherService {
 
     @Transactional
     public AnswerTask addGradleAnswer(Long teacherID, Long classroomID, Long taskID, Long answerID, byte gradle
-    ) throws NoAuthTeacherInClassroomException, NoSuchElementException {
+    ) throws NoAuthTeacherInClassroomException, NoSuchElementException, NotFoundTaskException {
         Classroom classroom = checkTeacherInClassroom(teacherID, classroomID);
         AnswerTask answer = answerRepository.findById(answerID).orElseThrow();
         if (answer.getTask().getId() != taskID){
-            throw new NoSuchElementException("Wrong task ID");
+            throw new NotFoundTaskException("Wrong task ID");
         }
         answer.setGradle(gradle);
         return answerRepository.save(answer);

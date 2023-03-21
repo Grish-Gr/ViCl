@@ -12,6 +12,7 @@ import com.mter.vicl.services.classroom.ClassroomStudentService;
 import com.mter.vicl.services.classroom.ClassroomTeacherService;
 import com.mter.vicl.services.exceptions.NoAuthStudentInClassroomException;
 import com.mter.vicl.services.exceptions.NoAuthTeacherInClassroomException;
+import com.mter.vicl.services.exceptions.NotFoundTaskException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/classroom/")
 public class ClassroomTaskController {
 
     @Autowired
@@ -59,7 +60,7 @@ public class ClassroomTaskController {
     public ResponseEntity<?> getAnswers(@PathVariable Long classroomId,
                                         @PathVariable Long taskID,
                                         JwtAuthentication authentication
-    ) throws NoAuthTeacherInClassroomException {
+    ) throws NoAuthTeacherInClassroomException, NotFoundTaskException {
         List<AnswerTask> answers = classroomTeacherService.getAnswersOnTask(
             authentication.getUserID(), classroomId, taskID
         );
@@ -72,7 +73,7 @@ public class ClassroomTaskController {
                                              @PathVariable Long classroomID,
                                              @PathVariable Long taskID,
                                              JwtAuthentication authentication
-    ) throws NoAuthTeacherInClassroomException {
+    ) throws NoAuthTeacherInClassroomException, NotFoundTaskException {
         AnswerTask answerTask = classroomTeacherService.addGradleAnswer(
             authentication.getUserID(), classroomID, taskID, gradleAnswerForm.answerID(), gradleAnswerForm.gradle()
         );

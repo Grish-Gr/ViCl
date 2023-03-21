@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @PreAuthorize("hasAuthority('CHANGE_CLASSROOM')")
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/classroom")
 public class ClassroomAdminController {
 
     @Autowired

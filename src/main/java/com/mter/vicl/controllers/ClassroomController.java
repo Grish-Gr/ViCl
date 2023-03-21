@@ -14,6 +14,7 @@ import com.mter.vicl.services.exceptions.NoAuthStudentInClassroomException;
 import com.mter.vicl.services.exceptions.NoAuthTeacherInClassroomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/v1")
+@PreAuthorize("hasAuthority('READ_CLASSROOM')")
+@RequestMapping("/api/v1/classroom")
 public class ClassroomController {
 
     @Autowired
@@ -45,7 +47,7 @@ public class ClassroomController {
             : ResponseEntity.ok(students.stream().map(AllInfoStudentDto::from).toList());
     }
 
-    @GetMapping("{classroomID}/tasks")
+    @GetMapping("/{classroomID}/tasks")
     public ResponseEntity<?> getTasks(@PathVariable Long classroomID, JwtAuthentication authentication
     ) throws NoAuthTeacherInClassroomException, NoAuthStudentInClassroomException {
         List<Task> tasks = classroomService.getTasks(

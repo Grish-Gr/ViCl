@@ -4,6 +4,8 @@ import com.mter.vicl.dto.request.LoginFormDto;
 import com.mter.vicl.dto.request.RefreshTokenFormDto;
 import com.mter.vicl.dto.request.RegistrationFormDto;
 import com.mter.vicl.dto.response.JwtResponseDto;
+import com.mter.vicl.dto.response.UserDto;
+import com.mter.vicl.entities.users.User;
 import com.mter.vicl.services.security.AuthenticationService;
 import com.mter.vicl.services.security.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ public class AuthController {
 
     @PostMapping("/registration")
     public ResponseEntity<?> registration(@RequestBody RegistrationFormDto registrationForm){
-        return ResponseEntity.ok(registrationService.register(registrationForm));
+        User user = registrationService.register(registrationForm);
+        return ResponseEntity.ok(UserDto.from(user));
     }
 }
