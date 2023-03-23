@@ -31,10 +31,11 @@ public class ClassroomStudentService {
     private TaskRepository taskRepository;
 
     @Transactional
-    public Classroom checkStudentInClassroom(Long studentID, Long classroomID) throws NoSuchElementException, NoAuthStudentInClassroomException {
+    public Classroom checkStudentInClassroom(Long studentID, Long classroomID
+    ) throws NoSuchElementException, NoAuthStudentInClassroomException {
         Classroom classroom = classroomRepository.findById(classroomID).orElseThrow();
         classroom.getRecordStudents().stream()
-            .filter(record -> record.getStudent().getId() == studentID)
+            .filter(record -> record.getStudent().getId() == studentID && record.getStatusRecord() == StatusRecord.ACTIVE)
             .findAny()
             .orElseThrow(NoAuthStudentInClassroomException::new);
         return classroom;

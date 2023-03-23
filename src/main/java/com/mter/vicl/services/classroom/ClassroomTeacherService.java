@@ -44,15 +44,6 @@ public class ClassroomTeacherService {
     }
 
     @Transactional
-    public List<Student> getStudentsInClassroom(Long teacherID, Long classroomID
-    ) throws NoSuchElementException, NoAuthTeacherInClassroomException {
-        Classroom classroom = checkTeacherInClassroom(teacherID, classroomID);
-        return classroom.getRecordStudents().stream()
-            .filter(record -> record.getStatusRecord() == StatusRecord.ACTIVE)
-            .map(RecordStudent::getStudent).toList();
-    }
-
-    @Transactional
     public List<RecordStudent> getUnconfirmedStudentsInClassroom(Long teacherID, Long classroomID
     ) throws NoSuchElementException, NoAuthTeacherInClassroomException {
         Classroom classroom = checkTeacherInClassroom(teacherID, classroomID);
@@ -80,7 +71,7 @@ public class ClassroomTeacherService {
             recordStudent.setStatusRecord(status);
             return recordRepository.save(recordStudent);
         } else {
-            throw  new NoAuthStudentInClassroomException();
+            throw new NoAuthStudentInClassroomException();
         }
     }
 

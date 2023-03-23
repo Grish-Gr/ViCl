@@ -10,6 +10,7 @@ import com.mter.vicl.repositories.StudentRepository;
 import com.mter.vicl.repositories.TeacherRepository;
 import com.mter.vicl.security.JwtProvider;
 import com.mter.vicl.security.JwtUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;

@@ -51,6 +51,10 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public String getName() {
+        return name;
+    }
+
+    public String getFullName(){
         return name + " " + lastname;
     }
 }
