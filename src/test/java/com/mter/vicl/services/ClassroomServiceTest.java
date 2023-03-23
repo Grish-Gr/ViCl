@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -41,6 +42,8 @@ public class ClassroomServiceTest {
     private ClassroomRepository classroomRepository;
     @InjectMocks
     private ClassroomService classroomService;
+    @Autowired
+    private MockMvc mockMvc;
 
     @BeforeEach
     public void initClassroomInDB(){
