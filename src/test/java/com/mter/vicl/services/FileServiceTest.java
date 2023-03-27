@@ -1,7 +1,9 @@
 package com.mter.vicl.services;
 
 import com.mter.vicl.dto.response.FileInfoDto;
-import com.mter.vicl.services.storage_files.ManipulateFile;
+import com.mter.vicl.dto.response.ResourceDto;
+import com.mter.vicl.entities.FileInfo;
+import com.mter.vicl.services.iofile.StorageService;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,25 +12,33 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.FileTypeMap;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @SpringBootTest
 public class FileServiceTest {
 
     @Inject
-    private ManipulateFile manipulateFile;
+    private StorageService manipulateFile;
 
     @Test
     public void testUploadFile() throws IOException {
+        File file = new File("src/main/resources/storage/4d/cf/4dcf24e879a8dfa1f1aa0682a543a579_8c577ae0-5b26-4bb7-80ea-b83b64da044c.xlsx");
         MultipartFile multipartFile = new MockMultipartFile(
             "Test file",
-            "Something text in file".getBytes()
+            "Test_file.xlsx",
+            "xlsx",
+            new FileInputStream(file)
         );
 
-        FileInfoDto fileInfoDto = manipulateFile.upload(multipartFile);
+        FileInfo fileInfo = manipulateFile.upload(multipartFile);
 
-        Assertions.assertEquals(fileInfoDto.name(), "Test file");
-        Assertions.assertEquals(fileInfoDto.size(), multipartFile.getSize());
+        Assertions.assertEquals(fileInfo.getFileName(), "Test file");
+        Assertions.assertEquals(fileInfo.getSize(), multipartFile.getSize());
     }
 
     @Test
@@ -38,10 +48,10 @@ public class FileServiceTest {
             "Something text in file".getBytes()
         );
 
-        FileInfoDto fileInfoDto = manipulateFile.upload(multipartFile);
-        Resource resource = manipulateFile.downloadFile(fileInfoDto.fileID());
+        FileInfo fileInfo = manipulateFile.upload(multipartFile);
+        ResourceDto resource = manipulateFile.downloadFile(fileInfo.getId());
 
-        Assertions.assertEquals(resource.getFilename(), "Test file");
+        Assertions.assertEquals(resource.fileInfo().getFileName(), "Test file");
     }
 
     @Test
@@ -51,9 +61,9 @@ public class FileServiceTest {
             "Something text in file".getBytes()
         );
 
-        FileInfoDto fileInfoDto = manipulateFile.upload(multipartFile);
-        FileInfoDto fileInfoDto1 = manipulateFile.getInfoByID(fileInfoDto.fileID());
+        FileInfo fileInfo = manipulateFile.upload(multipartFile);
+        FileInfo fileInfo1 = manipulateFile.getInfoByID(fileInfo.getId());
 
-        Assertions.assertEquals(fileInfoDto, fileInfoDto1);
+        Assertions.assertEquals(fileInfo, fileInfo1);
     }
 }

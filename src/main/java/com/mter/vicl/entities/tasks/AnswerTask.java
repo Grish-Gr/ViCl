@@ -1,8 +1,12 @@
 package com.mter.vicl.entities.tasks;
 
+import com.mter.vicl.entities.FileInfo;
 import com.mter.vicl.entities.users.Student;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -27,4 +31,14 @@ public class AnswerTask {
 
     @Column(name = "gradle")
     private byte gradle;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation")
+    private Date createDate;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "file_supplements_answer",
+        joinColumns = @JoinColumn(name = "answer_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "file_info_id", referencedColumnName = "id"))
+    private List<FileInfo> supplementFiles;
 }

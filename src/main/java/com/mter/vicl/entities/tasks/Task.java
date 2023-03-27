@@ -1,5 +1,6 @@
 package com.mter.vicl.entities.tasks;
 
+import com.mter.vicl.entities.FileInfo;
 import com.mter.vicl.entities.classroom.Classroom;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -37,4 +38,10 @@ public class Task {
 
     @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
     private List<AnswerTask> answers;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "file_supplements_task",
+        joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "file_info_id", referencedColumnName = "id"))
+    private List<FileInfo> supplementFiles;
 }
