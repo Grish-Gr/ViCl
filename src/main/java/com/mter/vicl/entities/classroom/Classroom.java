@@ -35,4 +35,7 @@ public class Classroom {
 
     @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL)
     private List<Task> tasks;
+
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ClassroomMessage> messages;
 }

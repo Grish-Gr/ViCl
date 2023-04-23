@@ -49,4 +49,14 @@ public class JwtUtils {
         Claims claims = jwtProvider.getClaimsAccessToken(accessToken);
         return claims.getExpiration().getTime() / 1000;
     }
+
+    public String getUserIDAuthService(String refreshToken){
+        Claims claims = jwtProvider.getClaimsRefreshToken(refreshToken);
+        return claims.get("role", String.class) + claims.getSubject();
+    }
+
+    public String getUserRole(String refreshToken){
+        Claims claims = jwtProvider.getClaimsRefreshToken(refreshToken);
+        return claims.get("role", String.class);
+    }
 }

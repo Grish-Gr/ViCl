@@ -10,13 +10,13 @@ import com.mter.vicl.repositories.StudentRepository;
 import com.mter.vicl.repositories.TeacherRepository;
 import com.mter.vicl.security.JwtProvider;
 import com.mter.vicl.security.JwtUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 @Service
@@ -32,20 +32,36 @@ public class AuthenticationService {
     private JwtProvider jwtProvider;
     @Autowired
     private JwtUtils jwtUtils;
+    private final HashMap<String, String> storageJwtTokens = new HashMap<>();
 
-    public JwtResponseDto getJwtTokens(LoginFormDto loginForm) throws AuthenticationException{
+    public JwtResponseDto loginInSystem(LoginFormDto loginForm) throws AuthenticationException{
         User user = loginForm.getRole().equals(Role.TEACHER)
             ? getTeacherByEmailAndPassword(loginForm.email(), loginForm.password())
             : getStudentByEmailAndPassword(loginForm.email(), loginForm.password());
+        JwtResponseDto jwtTokens = generateTokensByUser(user);
+        String userIDInSystem = jwtUtils.getUserIDAuthService(jwtTokens.getRefreshToken());
+        storageJwtTokens.put(userIDInSystem, jwtTokens.getRefreshToken());
         return generateTokensByUser(user);
     }
 
     public JwtResponseDto refreshJwtTokens(String refreshToken
     ) throws AuthenticationServiceException, NoSuchElementException {
         if (!jwtProvider.validateRefreshToken(refreshToken)){
-            throw new AuthenticationServiceException("Invalid jwt token");
+            throw new AuthenticationServiceException("Invalid refresh token");
         }
-        return generateTokensByRefreshToken(refreshToken);
+        String userIDInSystem = jwtUtils.getUserIDAuthService(refreshToken);
+        if (!storageJwtTokens.containsKey(userIDInSystem) ||
+            !storageJwtTokens.get(userIDInSystem).equals(refreshToken)
+        ){
+            storageJwtTokens.remove(userIDInSystem);
+            throw new AuthenticationServiceException("Token has already been refreshed");
+        }
+        String newRefreshToken = jwtUtils.generateNewRefreshToken(refreshToken);
+        String accessToken = jwtUtils.generateAccessTokenByRefreshToken(refreshToken);
+        Long expireTime = jwtUtils.getExpireTimeAccessToken(accessToken);
+        String role = jwtUtils.getUserRole(refreshToken);
+        storageJwtTokens.replace(userIDInSystem, newRefreshToken);
+        return new JwtResponseDto(accessToken, newRefreshToken, expireTime, role);
     }
 
     private Teacher getTeacherByEmailAndPassword(String email, String password) throws AuthenticationException{
@@ -83,13 +99,6 @@ public class AuthenticationService {
             user.getLastname()
         );
         Long expireTime = jwtUtils.getExpireTimeAccessToken(accessToken);
-        return new JwtResponseDto(accessToken, refreshToken, expireTime);
-    }
-
-    private JwtResponseDto generateTokensByRefreshToken(String refreshToken){
-        String newRefreshToken = jwtUtils.generateNewRefreshToken(refreshToken);
-        String accessToken = jwtUtils.generateAccessTokenByRefreshToken(refreshToken);
-        Long expireTime = jwtUtils.getExpireTimeAccessToken(accessToken);
-        return new JwtResponseDto(accessToken, newRefreshToken, expireTime);
+        return new JwtResponseDto(accessToken, refreshToken, expireTime, user.getRole().name());
     }
 }

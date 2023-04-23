@@ -1,7 +1,10 @@
 package com.mter.vicl.services.classroom;
 
+import com.mter.vicl.dto.request.ClassroomMessageFormDto;
 import com.mter.vicl.dto.request.TaskFormDto;
+import com.mter.vicl.entities.FileInfo;
 import com.mter.vicl.entities.classroom.Classroom;
+import com.mter.vicl.entities.classroom.ClassroomMessage;
 import com.mter.vicl.entities.classroom.RecordStudent;
 import com.mter.vicl.entities.classroom.StatusRecord;
 import com.mter.vicl.entities.tasks.AnswerTask;
@@ -11,10 +14,15 @@ import com.mter.vicl.repositories.*;
 import com.mter.vicl.services.exceptions.NoAuthStudentInClassroomException;
 import com.mter.vicl.services.exceptions.NoAuthTeacherInClassroomException;
 import com.mter.vicl.services.exceptions.NotFoundTaskException;
+import com.mter.vicl.services.storage.FileService;
+import com.mter.vicl.services.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,6 +40,10 @@ public class ClassroomTeacherService {
     private TaskRepository taskRepository;
     @Autowired
     private AnswerTaskRepository answerRepository;
+    @Autowired
+    private StorageService storageService;
+    @Autowired
+    private ClassroomMessageRepository messageRepository;
 
     public Classroom checkTeacherInClassroom(Long teacherID, Long classroomID
     ) throws NoSuchElementException, NoAuthTeacherInClassroomException {
@@ -89,16 +101,36 @@ public class ClassroomTeacherService {
     }
 
     @Transactional
-    public Task addTaskInClassroom(Long teacherID, Long classroomId, TaskFormDto taskForm
-    ) throws NoSuchElementException, NoAuthTeacherInClassroomException {
+    public Task addTaskInClassroom(Long teacherID, Long classroomId, TaskFormDto taskForm, MultipartFile... files
+    ) throws NoSuchElementException, NoAuthTeacherInClassroomException, IOException {
         Classroom classroom = checkTeacherInClassroom(teacherID, classroomId);
+        List<FileInfo> supplementFiles = storageService.uploadAll(files);
         Task task = new Task();
         task.setTitle(taskForm.title());
         task.setDescription(taskForm.description());
         task.setCreateDate(new Date());
+        task.setSupplementFiles(supplementFiles);
         task.setExpirationDate(taskForm.expirationDate());
         task.setClassroom(classroom);
         return taskRepository.save(task);
+    }
+
+    @Transactional
+    public ClassroomMessage sendMessageInClassroom(
+        Long teacherID,
+        Long classroomID,
+        ClassroomMessageFormDto messageForm,
+        MultipartFile... files
+    ) throws NoAuthTeacherInClassroomException {
+        Classroom classroom = checkTeacherInClassroom(teacherID, classroomID);
+        List<FileInfo> supplementFiles = storageService.uploadAll(files);
+        ClassroomMessage classroomMessage = new ClassroomMessage();
+        classroomMessage.setClassroom(classroom);
+        classroomMessage.setSupplementFiles(supplementFiles);
+        classroomMessage.setTitle(messageForm.title());
+        classroomMessage.setMessage(messageForm.message());
+        classroomMessage.setCreateDate(new Date());
+        return messageRepository.save(classroomMessage);
     }
 
     @Transactional

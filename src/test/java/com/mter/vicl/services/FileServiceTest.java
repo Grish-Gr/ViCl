@@ -1,23 +1,18 @@
 package com.mter.vicl.services;
 
-import com.mter.vicl.dto.response.FileInfoDto;
 import com.mter.vicl.dto.response.ResourceDto;
 import com.mter.vicl.entities.FileInfo;
-import com.mter.vicl.services.iofile.StorageService;
+import com.mter.vicl.services.storage.StorageService;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.activation.FileTypeMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @SpringBootTest
 public class FileServiceTest {

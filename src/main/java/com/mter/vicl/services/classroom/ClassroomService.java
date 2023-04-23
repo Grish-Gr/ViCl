@@ -1,6 +1,8 @@
 package com.mter.vicl.services.classroom;
 
+import com.mter.vicl.dto.request.ClassroomMessageDto;
 import com.mter.vicl.entities.classroom.Classroom;
+import com.mter.vicl.entities.classroom.ClassroomMessage;
 import com.mter.vicl.entities.classroom.RecordStudent;
 import com.mter.vicl.entities.classroom.StatusRecord;
 import com.mter.vicl.entities.tasks.Task;
@@ -29,7 +31,9 @@ public class ClassroomService {
         Classroom classroom = role.equals(Role.STUDENT)
             ? checkStudentInClassroom(userID, classroomID)
             : checkTeacherInClassroom(userID, classroomID);
-        return classroom.getRecordStudents().stream().map(RecordStudent::getStudent).toList();
+        return classroom.getRecordStudents().stream()
+            .filter(recordStudent -> recordStudent.getStatusRecord().equals(StatusRecord.ACTIVE))
+            .map(RecordStudent::getStudent).toList();
     }
 
     @Transactional
@@ -39,6 +43,15 @@ public class ClassroomService {
             ? checkStudentInClassroom(userID, classroomID)
             : checkTeacherInClassroom(userID, classroomID);
         return classroom.getTasks();
+    }
+
+    @Transactional
+    public ClassroomMessageDto getMessages(Long classroomID, Long userID, Role role
+    ) throws NoAuthStudentInClassroomException, NoAuthTeacherInClassroomException {
+        Classroom classroom = role.equals(Role.STUDENT)
+            ? checkStudentInClassroom(userID, classroomID)
+            : checkTeacherInClassroom(userID, classroomID);
+        return ClassroomMessageDto.from(classroom.getMessages(), classroom);
     }
 
     @Transactional

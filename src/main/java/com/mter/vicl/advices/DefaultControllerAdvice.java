@@ -1,13 +1,12 @@
 package com.mter.vicl.advices;
 
-import com.mter.vicl.services.exceptions.NoAuthStudentInClassroomException;
-import com.mter.vicl.services.exceptions.NoAuthTeacherInClassroomException;
-import com.mter.vicl.services.exceptions.NotFoundTaskException;
+import com.mter.vicl.services.exceptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -36,6 +35,21 @@ public class DefaultControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundTaskException.class)
     public ResponseEntity<Response> notFoundTask(NotFoundTaskException e){
         return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({AuthenticationServiceException.class})
+    public ResponseEntity<Response> authServiceException(AuthenticationServiceException e){
+        return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({FileStorageException.class})
+    public ResponseEntity<Response> fileStorageException(FileStorageException e){
+        return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({NotFoundFileException.class})
+    public ResponseEntity<Response> notFoundFile(NotFoundFileException e){
+        return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @Override

@@ -12,10 +12,7 @@ import com.mter.vicl.security.JwtAuthentication;
 import com.mter.vicl.security.JwtProvider;
 import com.mter.vicl.security.JwtUtils;
 import com.mter.vicl.services.security.AuthenticationService;
-import io.jsonwebtoken.security.SignatureException;
-import lombok.extern.java.Log;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -80,7 +73,7 @@ public class AuthenticationServiceTests {
     public void testLoginTeacher(){
         LoginFormDto loginForm = new LoginFormDto("test@mail.com", "test", "TEACHER");
 
-        JwtResponseDto jwtResponse = authenticationService.getJwtTokens(loginForm);
+        JwtResponseDto jwtResponse = authenticationService.loginInSystem(loginForm);
         JwtAuthentication authentication = jwtUtils.getJwtAuthentication(jwtResponse.getAccessToken());
 
         Assertions.assertTrue(jwtProvider.validateAccessToken(jwtResponse.getAccessToken()));
@@ -97,7 +90,7 @@ public class AuthenticationServiceTests {
     public void testLoginStudent(){
         LoginFormDto loginFormDto = new LoginFormDto("test_stud@mail.com", "test_stud", "STUDENT");
 
-        JwtResponseDto jwtResponse = authenticationService.getJwtTokens(loginFormDto);
+        JwtResponseDto jwtResponse = authenticationService.loginInSystem(loginFormDto);
         JwtAuthentication authentication = jwtUtils.getJwtAuthentication(jwtResponse.getAccessToken());
 
         Assertions.assertTrue(jwtProvider.validateAccessToken(jwtResponse.getAccessToken()));
@@ -113,7 +106,7 @@ public class AuthenticationServiceTests {
     @Test
     public void testRefreshTokenStudent(){
         LoginFormDto loginFormDto = new LoginFormDto("test_stud@mail.com", "test_stud", "STUDENT");
-        JwtResponseDto jwtResponse = authenticationService.getJwtTokens(loginFormDto);
+        JwtResponseDto jwtResponse = authenticationService.loginInSystem(loginFormDto);
         RefreshTokenFormDto refreshTokenForm = new RefreshTokenFormDto(jwtResponse.getRefreshToken());
 
         JwtResponseDto refreshJwtResponse = authenticationService.refreshJwtTokens(refreshTokenForm.refreshToken());
@@ -132,7 +125,7 @@ public class AuthenticationServiceTests {
     @Test
     public void testRefreshTokenTeacher(){
         LoginFormDto loginFormDto = new LoginFormDto("test@mail.com", "test", "TEACHER");
-        JwtResponseDto jwtResponse = authenticationService.getJwtTokens(loginFormDto);
+        JwtResponseDto jwtResponse = authenticationService.loginInSystem(loginFormDto);
         RefreshTokenFormDto refreshTokenForm = new RefreshTokenFormDto(jwtResponse.getRefreshToken());
 
         JwtResponseDto refreshJwtResponse = authenticationService.refreshJwtTokens(refreshTokenForm.refreshToken());
@@ -153,7 +146,7 @@ public class AuthenticationServiceTests {
         LoginFormDto loginFormDto = new LoginFormDto("test@mail.com", "test_stud", "STUDENT");
 
         Assertions.assertThrows(AuthenticationException.class,
-            () -> authenticationService.getJwtTokens(loginFormDto)
+            () -> authenticationService.loginInSystem(loginFormDto)
         );
     }
 
@@ -162,7 +155,7 @@ public class AuthenticationServiceTests {
         LoginFormDto loginFormDto = new LoginFormDto("test_stud@mail.com", "test_stud", "TEACHER");
 
         Assertions.assertThrows(AuthenticationException.class,
-            () -> authenticationService.getJwtTokens(loginFormDto)
+            () -> authenticationService.loginInSystem(loginFormDto)
         );
     }
 
@@ -171,7 +164,7 @@ public class AuthenticationServiceTests {
         LoginFormDto loginFormDto = new LoginFormDto("test@mail.com", "tst", "TEACHER");
 
         Assertions.assertThrows(AuthenticationException.class,
-            () -> authenticationService.getJwtTokens(loginFormDto)
+            () -> authenticationService.loginInSystem(loginFormDto)
         );
     }
 }

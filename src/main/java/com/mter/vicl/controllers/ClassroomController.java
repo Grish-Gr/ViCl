@@ -1,6 +1,8 @@
 package com.mter.vicl.controllers;
 
+import com.mter.vicl.dto.request.ClassroomMessageDto;
 import com.mter.vicl.dto.response.AllInfoStudentDto;
+import com.mter.vicl.dto.response.MessageDto;
 import com.mter.vicl.dto.response.InfoStudentDto;
 import com.mter.vicl.dto.response.TaskDto;
 import com.mter.vicl.entities.tasks.Task;
@@ -20,9 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @PreAuthorize("hasAuthority('READ_CLASSROOM')")
@@ -36,7 +36,7 @@ public class ClassroomController {
     @Autowired
     private ClassroomService classroomService;
 
-    @GetMapping("/{classroomID}/students")
+    @GetMapping("/{classroomID}/confirmed-students")
     public ResponseEntity<?> getStudents(@PathVariable Long classroomID, JwtAuthentication authentication
     ) throws NoAuthTeacherInClassroomException, NoAuthStudentInClassroomException {
         List<Student> students = classroomService.getStudents(
@@ -54,5 +54,14 @@ public class ClassroomController {
             classroomID, authentication.getUserID(), authentication.getRole()
         );
         return ResponseEntity.ok(tasks.stream().map(TaskDto::from).toList());
+    }
+
+    @GetMapping("/{classroomID}/messages")
+    public ResponseEntity<?> getMessages(@PathVariable Long classroomID, JwtAuthentication authentication
+    ) throws NoAuthTeacherInClassroomException, NoAuthStudentInClassroomException {
+        ClassroomMessageDto messages = classroomService.getMessages(
+            classroomID, authentication.getUserID(), authentication.getRole()
+        );
+        return ResponseEntity.ok(messages);
     }
 }

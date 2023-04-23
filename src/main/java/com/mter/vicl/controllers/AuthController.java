@@ -8,6 +8,7 @@ import com.mter.vicl.dto.response.UserDto;
 import com.mter.vicl.entities.users.User;
 import com.mter.vicl.services.security.AuthenticationService;
 import com.mter.vicl.services.security.RegistrationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthController {
@@ -26,7 +28,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginFormDto loginFormDto){
-        JwtResponseDto response = authenticationService.getJwtTokens(loginFormDto);
+        log.info("Try login " + loginFormDto.toString());
+        log.info("Try login " + loginFormDto.email());
+        JwtResponseDto response = authenticationService.loginInSystem(loginFormDto);
         return ResponseEntity.ok(response);
     }
 
