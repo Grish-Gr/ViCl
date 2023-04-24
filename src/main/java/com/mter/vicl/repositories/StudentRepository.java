@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface StudentRepository extends CrudRepository<Student, Long> {
-    Optional<Student> findByEmail(String email);
+    Optional<Student> findByEmailIgnoreCase(String email);
+    Boolean existsByEmail(String email);
 }

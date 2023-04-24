@@ -75,13 +75,13 @@ public class ClassroomAdminController {
 
     @PostMapping("/{classroomID}/message-with-supplement")
     public ResponseEntity<?> sendClassroomMessage(
-        @RequestPart(name = "task") ClassroomMessageFormDto messageForm,
+        @RequestPart(name = "message") ClassroomMessageFormDto messageForm,
         @PathVariable Long classroomID,
-        @RequestPart(name = "file") MultipartFile file,
+        @RequestPart(name = "files") MultipartFile[] files,
         JwtAuthentication authentication
     ) throws NoAuthTeacherInClassroomException {
         ClassroomMessage classroomMessage = classroomTeacherService.sendMessageInClassroom(
-            authentication.getUserID(), classroomID, messageForm, file
+            authentication.getUserID(), classroomID, messageForm, files
         );
         return ResponseEntity.ok(MessageDto.from(classroomMessage));
     }

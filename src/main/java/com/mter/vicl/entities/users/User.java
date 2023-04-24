@@ -33,4 +33,7 @@ abstract public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
+
+    @Column(name = "verification")
+    private boolean verificationInSystem;
 }

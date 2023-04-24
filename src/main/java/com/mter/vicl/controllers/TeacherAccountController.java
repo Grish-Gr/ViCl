@@ -9,6 +9,7 @@ import com.mter.vicl.security.JwtAuthentication;
 import com.mter.vicl.services.account.TeacherService;
 import com.mter.vicl.services.classroom.ClassroomTeacherService;
 import com.mter.vicl.services.security.AuthenticationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @PreAuthorize("hasAuthority('PERSONAL_ACCOUNT_TEACHER')")
 @RequestMapping("/api/v1/teacher")
@@ -31,6 +33,7 @@ public class TeacherAccountController {
         Classroom classroom = teacherService.createClassroom(
             authentication.getUserID(), classroomForm
         );
+        log.info("Create new classroom: {}", classroom.toString());
         return ResponseEntity.ok(ClassroomDto.from(classroom));
     }
 

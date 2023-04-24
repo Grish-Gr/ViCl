@@ -10,6 +10,7 @@ import com.mter.vicl.repositories.StudentRepository;
 import com.mter.vicl.repositories.TeacherRepository;
 import com.mter.vicl.security.JwtProvider;
 import com.mter.vicl.security.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 public class AuthenticationService {
 
@@ -38,6 +40,10 @@ public class AuthenticationService {
         User user = loginForm.getRole().equals(Role.TEACHER)
             ? getTeacherByEmailAndPassword(loginForm.email(), loginForm.password())
             : getStudentByEmailAndPassword(loginForm.email(), loginForm.password());
+        if (!user.isVerificationInSystem()){
+            log.error("User is not confirmed account by email");
+            throw new AuthenticationServiceException("User is not confirmed account by email");
+        }
         JwtResponseDto jwtTokens = generateTokensByUser(user);
         String userIDInSystem = jwtUtils.getUserIDAuthService(jwtTokens.getRefreshToken());
         storageJwtTokens.put(userIDInSystem, jwtTokens.getRefreshToken());
@@ -65,7 +71,7 @@ public class AuthenticationService {
     }
 
     private Teacher getTeacherByEmailAndPassword(String email, String password) throws AuthenticationException{
-        Teacher teacher = teacherRepository.findByEmail(email)
+        Teacher teacher = teacherRepository.findByEmailIgnoreCase(email)
             .orElseThrow(() -> new AuthenticationServiceException("Invalid email or password")
         );
         if (passwordEncoder.matches(password, teacher.getPassword())){
@@ -76,7 +82,7 @@ public class AuthenticationService {
     }
 
     private Student getStudentByEmailAndPassword(String email, String password){
-        Student student = studentRepository.findByEmail(email)
+        Student student = studentRepository.findByEmailIgnoreCase(email)
             .orElseThrow(() -> new AuthenticationServiceException("Invalid email or password"));
         if (passwordEncoder.matches(password, student.getPassword())){
             return student;

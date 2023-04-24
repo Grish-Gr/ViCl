@@ -46,25 +46,11 @@ public class ClassroomTaskController {
     }
 
     @PreAuthorize("hasAuthority('CREATE_TASK')")
-    @PostMapping("/{classroomID}/task-with-supplement")
-    public ResponseEntity<?> createTaskWithSupplementFile(
-        @RequestPart(name = "task") TaskFormDto taskForm,
-        @PathVariable Long classroomID,
-        @RequestPart(name = "file") MultipartFile file,
-        JwtAuthentication authentication
-    ) throws NoAuthTeacherInClassroomException, IOException {
-        Task task = classroomTeacherService.addTaskInClassroom(
-            authentication.getUserID(), classroomID, taskForm, file
-        );
-        return ResponseEntity.ok(TaskDto.from(task));
-    }
-
-    @PreAuthorize("hasAuthority('CREATE_TASK')")
     @PostMapping("/{classroomID}/task-with-supplements")
     public ResponseEntity<?> createTaskWithSupplementFiles(
-        @RequestBody TaskFormDto taskForm,
+        @RequestPart(name = "task") TaskFormDto taskForm,
         @PathVariable Long classroomID,
-        @RequestParam(name = "files") MultipartFile[] files,
+        @RequestPart(name = "files") MultipartFile[] files,
         JwtAuthentication authentication
     ) throws NoAuthTeacherInClassroomException, IOException {
         Task task = classroomTeacherService.addTaskInClassroom(
@@ -79,6 +65,21 @@ public class ClassroomTaskController {
                                        @PathVariable Long classroomID,
                                        @PathVariable Long taskID,
                                        JwtAuthentication authentication
+    ) throws NoAuthStudentInClassroomException {
+        AnswerTask answer = classroomStudentService.putAnswerTask(
+            authentication.getUserID(), classroomID, taskID, answerForm
+        );
+        return ResponseEntity.ok(AnswerTaskDto.from(answer));
+    }
+
+    @PreAuthorize("hasAuthority('PASS_ANSWER")
+    @PostMapping("/{classroomID}/{taskID}/answer-with-supplements")
+    public ResponseEntity<?> addAnswerWithSupplements(
+        @RequestPart(name = "answer") AnswerFormDto answerForm,
+        @PathVariable Long classroomID,
+        @PathVariable Long taskID,
+        @RequestPart(name = "files") MultipartFile[] files,
+        JwtAuthentication authentication
     ) throws NoAuthStudentInClassroomException {
         AnswerTask answer = classroomStudentService.putAnswerTask(
             authentication.getUserID(), classroomID, taskID, answerForm
